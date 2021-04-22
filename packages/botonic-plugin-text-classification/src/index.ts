@@ -1,11 +1,16 @@
 import type { Plugin, PluginPostRequest, PluginPreRequest } from '@botonic/core'
 import { INPUT } from '@botonic/core'
 
+import { ModelSelector } from './model/model-selector'
 import type { PluginOptions } from './types'
 import { detectLocale } from './utils/locale-utils'
 
 export default class BotonicPluginTextClassification implements Plugin {
-  constructor(readonly options: PluginOptions) {}
+  private readonly modelsSelector: Promise<ModelSelector>
+
+  constructor(readonly options: PluginOptions) {
+    this.modelsSelector = ModelSelector.build(this.options.locales)
+  }
 
   async pre(request: PluginPreRequest): Promise<void> {
     try {
